@@ -5,11 +5,13 @@
         <title>Webpack App</title>
     </head>
     <body>
-        <div class="container">
+        <div class="container mx-auto col-md-10 col-md-8">
+            <h1 class="head">RSS агрегатор</h1>
+            <p class="lead">Начни читать RSS сегодня! Это легко, это красиво</p>
         <form class="rss-form">
             <div class="row">
                 <div class="col-9">
-                    <input type="password" class="form-control" placeholder="Ссылка RSS" id="exampleInputPassword1">
+                    <input type="text" class="form-control is-invalid" placeholder="Ссылка RSS" id="exampleInputPassword1">
                 </div>
                 <div class="col-3">
                     <button type="submit" class="btn btn-primary">Добавить</button>
@@ -18,6 +20,12 @@
             <p>Пример: https://ru.hexlet.io/lessons.rss</p>
         </form>
         </div>
+        <footer class="footer border-top bg-light">
+            <div class="text-center">
+                "created by "
+                <a href="https://github.com/DianaShilova">Diana Shilova</a>
+            </div>
+        </footer>
     </body>
     
 </html>
