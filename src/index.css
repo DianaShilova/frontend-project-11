@@ -2,13 +2,29 @@
     padding-top: 50px;
 }
 .head {
-
+    color: white;
+    top: 50px;
     margin-bottom: 0 !important ;
     font-size: 4rem;
 }
+.text-muted {
+    color: #6c757d !important
+}
+.container-first {
+    background: black !important
+}
 
+.text-white {
+    color: white;
+}
+.footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+}
 .text-center {
     text-align: center !important;
+    margin: 15px 0px;
 }
 
 .border-top {
