@@ -17,11 +17,7 @@
 .text-white {
     color: white;
 }
-.footer {
-    position: fixed;
-    bottom: 0px;
-    width: 100%;
-}
+
 .text-center {
     text-align: center !important;
     margin: 15px 0px;
@@ -37,11 +33,21 @@
     width: 83.33333%;
 }
 
+.is-hidden {
+    display: none;
+}
+
+.success-url {
+    color: greenyellow;
+}
+
+.error-url {
+    color: red;
+}
 .col-md-8 {
     flex: 0 0 auto;
     width: 66.66667%;
 }
-
 .mx-auto {
     margin-right: auto !important;
     margin-left: auto !important;
@@ -49,4 +55,9 @@
 .lead {
     font-size: 1.25rem;
     font-weight: 300;
+}
+.footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
 }
