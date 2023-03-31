@@ -4,8 +4,8 @@ import './translation'
 
 const urlform = document.querySelector('.rss-form');
 const rssInput = document.querySelector('#url-input')
-const successLabel = document.querySelector('.success-url');
-const errorLabel = document.querySelector('.error-url');
+const validatorOutput = document.querySelector('.validator-output')
+
 
 const schema = yup.object().shape({
     url: yup.string().url(i18next.t('error-url')).required(i18next.t('required')),
@@ -15,12 +15,14 @@ const schema = yup.object().shape({
 const testUrl = (isError, error) => {
     rssInput.classList.toggle('is-invalid', isError);
     rssInput.classList.toggle('is-valid', !isError);
-    successLabel.classList.toggle('is-hidden', isError);
-    errorLabel.classList.toggle('is-hidden', !isError);
+    validatorOutput.classList.remove('is-hidden');
+    validatorOutput.classList.toggle('error-url', isError)
+    validatorOutput.classList.toggle('success-url', !isError)
     if (!isError) {
-        successLabel.textContent = (i18next.t('success-url'))
+        validatorOutput.textContent = (i18next.t('success-url'))
+    
     } else {
-        errorLabel.textContent = (error.message);
+        validatorOutput.textContent = (error.message);
     }    
 } 
 
@@ -35,7 +37,6 @@ const onSubmit = (event) => {
     schema.validate(data)
         .then(() => testUrl(false))
         .catch((error) => { testUrl(true, error)
-        console.log(error)
     });
 }
 
