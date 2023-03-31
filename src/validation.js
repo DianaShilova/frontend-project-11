@@ -1,28 +1,29 @@
 import * as yup from 'yup';
-
+import i18next from 'i18next';
+import './translation'
 
 const urlform = document.querySelector('.rss-form');
 const rssInput = document.querySelector('#url-input')
-const succesLabel = document.querySelector('.success-url');
+const successLabel = document.querySelector('.success-url');
 const errorLabel = document.querySelector('.error-url');
 
 const schema = yup.object().shape({
-    url: yup.string().url().required(),
+    url: yup.string().url(i18next.t('error-url')).required(i18next.t('required')),
+
 });
 
-const onSuccess = () => {
-    rssInput.classList.remove('is-invalid');
-    rssInput.classList.add('is-valid');
-    succesLabel.classList.remove('is-hidden');
-    errorLabel.classList.add('is-hidden');
-}
+const testUrl = (isError, error) => {
+    rssInput.classList.toggle('is-invalid', isError);
+    rssInput.classList.toggle('is-valid', !isError);
+    successLabel.classList.toggle('is-hidden', isError);
+    errorLabel.classList.toggle('is-hidden', !isError);
+    if (!isError) {
+        successLabel.textContent = (i18next.t('success-url'))
+    } else {
+        errorLabel.textContent = (error.message);
+    }    
+} 
 
-const onError = () => {
-    rssInput.classList.remove('is-valid');
-    rssInput.classList.add('is-invalid');
-    errorLabel.classList.remove('is-hidden');
-    succesLabel.classList.add('is-hidden');
-}
 
 const onSubmit = (event) => {
     event.preventDefault();
@@ -32,8 +33,10 @@ const onSubmit = (event) => {
         data[key] = value;
     }
     schema.validate(data)
-        .then(onSuccess)
-        .catch(onError);
+        .then(() => testUrl(false))
+        .catch((error) => { testUrl(true, error)
+        console.log(error)
+    });
 }
 
 urlform.addEventListener('submit', onSubmit);
