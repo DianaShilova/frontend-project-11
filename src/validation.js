@@ -2,15 +2,15 @@ import * as yup from 'yup';
 import i18next from 'i18next';
 import './translation'
 
-const urlform = document.querySelector('.rss-form');
 const rssInput = document.querySelector('#url-input')
 const validatorOutput = document.querySelector('.validator-output')
-
 
 const schema = yup.object().shape({
     url: yup.string().url(i18next.t('error-url')).required(i18next.t('required')),
 
 });
+
+
 
 const testUrl = (isError, error) => {
     rssInput.classList.toggle('is-invalid', isError);
@@ -26,18 +26,19 @@ const testUrl = (isError, error) => {
     }    
 } 
 
-
-const onSubmit = (event) => {
-    event.preventDefault();
-    const data = {};
-    const formData = new FormData(event.target);
-    for (let [key, value] of formData) {
-        data[key] = value;
-    }
-    schema.validate(data)
-        .then(() => testUrl(false))
-        .catch((error) => { testUrl(true, error)
-    });
+const validate = (data) => {
+    const promise = new Promise((resolve, reject) => {
+        schema.validate(data)
+        .then(() => { 
+            testUrl(false)
+            resolve();
+        })
+        .catch((error) => { 
+            testUrl(true, error)
+            reject();
+        });
+    })
+    return promise;
 }
 
-urlform.addEventListener('submit', onSubmit);
+export { validate };
