@@ -12,7 +12,7 @@ const schema = yup.object().shape({
 
 
 
-const testUrl = (isError, error) => {
+const rendorResult = (isError, error) => {
     rssInput.classList.toggle('is-invalid', isError);
     rssInput.classList.toggle('is-valid', !isError);
     validatorOutput.classList.remove('is-hidden');
@@ -30,11 +30,11 @@ const validate = (data) => {
     const promise = new Promise((resolve, reject) => {
         schema.validate(data)
         .then(() => { 
-            testUrl(false)
+            rendorResult(false)
             resolve();
         })
         .catch((error) => { 
-            testUrl(true, error)
+            rendorResult(true, error)
             reject();
         });
     })
