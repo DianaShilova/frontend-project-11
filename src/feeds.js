@@ -5,6 +5,7 @@ const rssFeedsElement = document.querySelector('#rss-feeds');
 export const render = (rss) => {
     feeds(rss);
     posts(rss);
+    console.log(rss)
 }
 
 export const feeds = (rss) => {
@@ -34,21 +35,37 @@ export const feeds = (rss) => {
 
 export const posts = (rss) => {
     rssPostsElement.innerHTML = '';
-
+    let i = 0;
     const h2 = document.createElement('h2');
     h2.textContent = 'Посты';
     const ul = document.createElement('ul');
 
     for (let url in rss) {
         const rssData = rss[url];
+        
             rssData.rssPosts.forEach(post => {
+                i += 1;
                 const li = document.createElement('li');
                 ul.append(li);
                 const a = document.createElement('a');
                 a.setAttribute('href', post.link)
-                
                 a.textContent = post.title;
+                a.dataset.id = i;
+                a.classList.add('fw-bold');
+
+                const button = document.createElement('button');
+                button.setAttribute('type', 'button')
+                button.textContent = 'Просмотр';
+                button.dataset.id = i;
+                button.dataset.bsToggle = "modal";
+                button.dataset.bsTarget = "#modal";
+                button.dataset.feedUrl = url;
+                button.dataset.postUrl = post.link;
+                
+
                 li.append(a);
+                li.append(button);
+                
             });
             
         };

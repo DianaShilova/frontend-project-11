@@ -34,5 +34,10 @@ const fetch = (url) => {
 
 export const autoupdate = (url) => {
     fetch(url);
-    setTimeout(() => autoupdate(url), 5000)
+    // setTimeout(() => autoupdate(url), 5000)
+}
+
+export const getPost = (feedUrl, postUrl) => {
+    const post = rss[feedUrl].rssPosts.get(postUrl);
+    return post;
 }
