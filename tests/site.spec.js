@@ -10,7 +10,7 @@ const successUrl = 'https://lorem-rss.hexlet.app/feed?unit=second&interval=30';
 // })
 
 test('success url', async ({ page }) => {
-  await page.goto('http://localhost:8080/');
+  await page.goto('https://frontend-project-11-blush.vercel.app');
   await page.getByPlaceholder('ссылка RSS').fill(successUrl);
   await page.getByText('Добавить').click();
   const message = await page.getByText('RSS успешно загружен');
@@ -18,7 +18,7 @@ test('success url', async ({ page }) => {
 });
 
 test('duplicate url', async ({ page }) => {
-  await page.goto('http://localhost:8080/');
+  await page.goto('https://frontend-project-11-blush.vercel.app');
   await page.getByPlaceholder('ссылка RSS').fill(successUrl);
   await page.getByText('Добавить').click();
   await page.waitForTimeout(2000);
@@ -31,7 +31,7 @@ test('duplicate url', async ({ page }) => {
 
 test('wrong url', async ({ page }) => {
   const wrongUrl = 'https://lorem-rss';
-  await page.goto('http://localhost:8080/');
+  await page.goto('https://frontend-project-11-blush.vercel.app');
   await page.getByPlaceholder('ссылка RSS').fill(wrongUrl);
   await page.getByText('Добавить').click();
   const message = await page.getByText('Ссылка должна быть валидным URL');
