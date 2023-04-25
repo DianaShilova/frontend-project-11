@@ -1,4 +1,7 @@
-import { XMLParser } from "fast-xml-parser";
+import { XMLParser } from 'fast-xml-parser';
+import i18next from 'i18next';
+
+const validatorOutput = document.querySelector('.feedback');
 
 const parse = (data) => {
   try {
@@ -8,9 +11,14 @@ const parse = (data) => {
     const rssFeeds = { title, description, link };
     const rssPosts = xml.rss.channel.item;
     return { rssFeeds, rssPosts };
-  } catch {
-    throw new Error('Parsing Error');
+  } catch (error) {
+    validatorOutput.classList.remove('is-hidden');
+    validatorOutput.classList.remove('text-muted');
+    validatorOutput.textContent = (i18next.t('not-rss'));
+    validatorOutput.classList.toggle('text-danger', true);
+    validatorOutput.classList.toggle('text-success', false);
+    throw new Error(i18next.t('not-rss'));
   }
 };
 
-export { parse };
+export default parse;
