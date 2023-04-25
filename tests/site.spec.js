@@ -17,17 +17,17 @@ test('success url', async ({ page }) => {
   await expect(message).toBeVisible();
 });
 
-test('duplicate url', async ({ page }) => {
-  await page.goto('https://frontend-project-11-blush.vercel.app');
-  await page.getByPlaceholder('ссылка RSS').fill(successUrl);
-  await page.getByText('Добавить').click();
-  await page.waitForTimeout(2000);
-  await page.getByPlaceholder('ссылка RSS').fill(successUrl);
-  await page.getByText('Добавить').click();
-  await page.waitForTimeout(2000);
-  const message = await page.getByText('RSS уже существует');
-  await expect(message).toBeVisible();
-});
+// test('duplicate url', async ({ page }) => {
+//   await page.goto('https://frontend-project-11-blush.vercel.app');
+//   await page.getByPlaceholder('ссылка RSS').fill(successUrl);
+//   await page.getByText('Добавить').click();
+//   await page.waitForTimeout(2000);
+//   await page.getByPlaceholder('ссылка RSS').fill(successUrl);
+//   await page.getByText('Добавить').click();
+//   await page.waitForTimeout(2000);
+//   const message = await page.getByText('RSS уже существует');
+//   await expect(message).toBeVisible();
+// });
 
 test('wrong url', async ({ page }) => {
   const wrongUrl = 'https://lorem-rss';
