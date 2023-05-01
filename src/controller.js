@@ -23,12 +23,6 @@ const parse = (data) => {
     const rssPosts = xml.rss.channel.item;
     return { rssFeeds, rssPosts };
   } catch (error) {
-    // validatorOutput.classList.remove('is-hidden');
-    // validatorOutput.classList.remove('text-muted');
-    // validatorOutput.textContent = (i18next.t('not-rss'));
-    // validatorOutput.classList.toggle('text-danger', true);
-    // validatorOutput.classList.toggle('text-success', false);
-    // throw new Error(i18next.t('not-rss'));
     throw new Error('Parsing error');
   }
 };
@@ -58,7 +52,7 @@ const watchState = onChange(state, (path, value) => {
           url: value,
           posts: data.rssPosts,
         });
-
+        renderResult(null, i18next.t('success-url'));
         const autoupdate = (url) => {
           fetchData(url)
             .then((data2) => {
@@ -85,7 +79,6 @@ const watchState = onChange(state, (path, value) => {
   } else if (path.startsWith('feeds')) {
     renderResult(null, i18next.t('loading-url'));
   } else if (path.startsWith('data')) {
-    renderResult(null, i18next.t('success-url'));
     rendorFeeds(watchState.data);
     rendorPosts(watchState.data);
   }
