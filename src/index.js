@@ -1,5 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-import './index.css';
+// import './index.css';
 import './translation';
-import './form';
+// import './form';
+
+import './controller';
+import './view';
