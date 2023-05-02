@@ -4,7 +4,13 @@ import axios from 'axios';
 import i18next from 'i18next';
 import { XMLParser } from 'fast-xml-parser';
 import state, { getPost } from './state';
-import renderResult, { rendorFeeds, rendorPosts, handleShowModal } from './view';
+import CustomError from './error';
+import renderResult, {
+  renderFeeds,
+  renderPosts,
+  handleShowModal,
+  clearInput,
+} from './view';
 
 const exampleModal = document.querySelector('#modal');
 const form = document.querySelector('.rss-form');
@@ -23,26 +29,33 @@ const parse = (data) => {
     const rssPosts = xml.rss.channel.item;
     return { rssFeeds, rssPosts };
   } catch (error) {
-    throw new Error('Parsing error');
+    throw new CustomError(i18next.t('parsing-error'));
   }
 };
 const fetchData = (url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
   .then((response) => response.data.contents)
-  .then((data) => parse(data));
+  .then((data) => parse(data))
+  .catch((error) => {
+    if (error instanceof CustomError) {
+      throw error;
+    }
+    throw new Error(i18next.t('network-error'));
+  });
 
 const watchState = onChange(state, (path, value) => {
   if (path === 'form.url' && value !== '') {
     schema.validate(watchState.form)
       .then(() => {
         if (!watchState.feeds[value]) {
-          watchState.feeds[value] = true;
           watchState.form.url = '';
+          renderResult(null, i18next.t('loading-url'));
           return fetchData(value);
         }
         renderResult(new Error(i18next.t('already-exist')));
         throw new Error(i18next.t('already-exist'));
       })
       .then((data) => {
+        watchState.feeds[value] = true;
         data.rssPosts.forEach((post) => {
           watchState.posts[post.link] = post;
         });
@@ -76,17 +89,16 @@ const watchState = onChange(state, (path, value) => {
       });
   } else if (path === 'form.error') {
     renderResult(watchState.form.error);
-  } else if (path.startsWith('feeds')) {
-    renderResult(null, i18next.t('loading-url'));
   } else if (path.startsWith('data')) {
-    rendorFeeds(watchState.data);
-    rendorPosts(watchState.data);
+    renderFeeds(watchState.data);
+    renderPosts(watchState.data);
   }
 });
 
 const onSubmit = (event) => {
   event.preventDefault();
   watchState.form.url = input.value;
+  clearInput();
 };
 
 form.addEventListener('submit', onSubmit);

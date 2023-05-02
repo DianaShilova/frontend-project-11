@@ -12,6 +12,8 @@ i18next.init({
         'already-exist': 'RSS уже существует',
         'not-rss': 'Ресурс не содержит валидный RSS',
         'loading-url': 'RSS загружается',
+        'parsing-error': 'Ресурс не содержит валидный RSS',
+        'network-error': 'Ошибка сети',
       },
     },
   },

@@ -20,7 +20,7 @@ const renderResult = (error, message) => {
   }
 };
 
-export const rendorFeeds = (data) => {
+export const renderFeeds = (data) => {
   rssFeedsElement.innerHTML = '';
   const h2 = document.createElement('h2');
   h2.textContent = 'Фиды';
@@ -52,7 +52,7 @@ export const rendorFeeds = (data) => {
   });
 };
 
-export const rendorPosts = (data) => {
+export const renderPosts = (data) => {
   rssPostsElement.innerHTML = '';
   let i = 0;
   const h2 = document.createElement('h2');
@@ -115,6 +115,10 @@ export const handleShowModal = (e) => {
   buttonPost.setAttribute('href', postUrl);
   postTitle.classList.remove('fw-bold');
   postTitle.classList.add('fw-normal');
+};
+
+export const clearInput = () => {
+  rssInput.value = '';
 };
 
 export default renderResult;
