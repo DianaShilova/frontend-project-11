@@ -18,9 +18,6 @@ const input = document.querySelector('#url-input');
 const app = () => {
   const state = {
     state: 'init',
-    form: {
-      url: '',
-    },
     feeds: {},
     posts: {},
     data: [],
@@ -49,52 +46,8 @@ const app = () => {
       throw new Error(i18next.t('network-error'));
     });
 
-  const watchState = onChange(state, (path, value) => {
-    if (path === 'form.url' && value !== '') {
-      schema.validate(watchState.form)
-        .then(() => {
-          if (!watchState.feeds[value]) {
-            watchState.form.url = '';
-            renderResult(null, i18next.t('loading-url'));
-            return fetchData(value);
-          }
-          renderResult(new Error(i18next.t('already-exist')));
-          throw new Error(i18next.t('already-exist'));
-        })
-        .then((data) => {
-          watchState.feeds[value] = true;
-          data.rssPosts.forEach((post) => {
-            watchState.posts[post.link] = post;
-          });
-          watchState.data.push({
-            title: data.rssFeeds.title,
-            description: data.rssFeeds.description,
-            url: value,
-            posts: data.rssPosts,
-          });
-          renderResult(null, i18next.t('success-url'));
-          const autoupdate = (url) => {
-            fetchData(url)
-              .then((data2) => {
-                data2.rssPosts.forEach((post) => {
-                  if (!getPost(url, post.link)) {
-                    const feed = watchState.data.find((f) => f.url === url);
-                    if (feed) {
-                      feed.posts.push(post);
-                    }
-                  }
-                });
-              });
-            setTimeout(() => autoupdate(value), 5000);
-          };
-          autoupdate(value);
-        })
-        .catch((error) => {
-          renderResult(error);
-          watchState.state = 'invalid';
-          watchState.form.error = error;
-        });
-    } else if (path === 'form.error') {
+  const watchState = onChange(state, (path) => {
+    if (path === 'form.error') {
       renderResult(watchState.form.error);
     } else if (path.startsWith('data')) {
       renderFeeds(watchState.data);
@@ -104,7 +57,49 @@ const app = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    watchState.form.url = input.value;
+    const url = input.value;
+    schema.validate({ url })
+      .then(() => {
+        if (!watchState.feeds[url]) {
+          renderResult(null, i18next.t('loading-url'));
+          return fetchData(url);
+        }
+        renderResult(new Error(i18next.t('already-exist')));
+        throw new Error(i18next.t('already-exist'));
+      })
+      .then((data) => {
+        watchState.feeds[url] = true;
+        data.rssPosts.forEach((post) => {
+          watchState.posts[post.link] = post;
+        });
+        watchState.data.push({
+          title: data.rssFeeds.title,
+          description: data.rssFeeds.description,
+          url,
+          posts: data.rssPosts,
+        });
+        renderResult(null, i18next.t('success-url'));
+        const autoupdate = (rssUrl) => {
+          fetchData(rssUrl)
+            .then((data2) => {
+              data2.rssPosts.forEach((post) => {
+                if (!getPost(rssUrl, post.link)) {
+                  const feed = watchState.data.find((f) => f.url === rssUrl);
+                  if (feed) {
+                    feed.posts.push(post);
+                  }
+                }
+              });
+            });
+          setTimeout(() => autoupdate(url), 5000);
+        };
+        autoupdate(url);
+      })
+      .catch((error) => {
+        renderResult(error);
+        watchState.state = 'invalid';
+        watchState.form.error = error;
+      });
     clearInput();
   };
 
