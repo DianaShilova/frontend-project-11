@@ -1,7 +1,7 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "description": "My webpack project",
+  "description": "RSS aggregator",
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode=production --node-env=production",

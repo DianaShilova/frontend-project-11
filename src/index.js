@@ -1,5 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
-
 import './translation';
-import './controller';
+
+import app from './app';
+
+app();

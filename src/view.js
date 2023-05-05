@@ -1,5 +1,3 @@
-import { getPost } from './state';
-
 const rssInput = document.querySelector('.form-control');
 const validatorOutput = document.querySelector('.feedback');
 const rssFeedsElement = document.querySelector('.feeds');
@@ -98,11 +96,8 @@ export const renderPosts = (data) => {
   card.append(ul);
 };
 
-export const handleShowModal = (e) => {
+export const handleShowModal = (e, post) => {
   const target = e.relatedTarget;
-  const postUrl = target.getAttribute('data-post-url');
-  const feedUrl = target.getAttribute('data-feed-url');
-  const post = getPost(feedUrl, postUrl);
   post.read = true;
 
   const modalTitle = exampleModal.querySelector('.modal-title');
@@ -112,7 +107,7 @@ export const handleShowModal = (e) => {
 
   modalTitle.textContent = post.title;
   modalBody.textContent = post.description;
-  buttonPost.setAttribute('href', postUrl);
+  buttonPost.setAttribute('href', post.link);
   postTitle.classList.remove('fw-bold');
   postTitle.classList.add('fw-normal');
 };
