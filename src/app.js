@@ -79,21 +79,6 @@ const app = () => {
           posts: data.rssPosts,
         });
         renderResult(null, i18next.t('success-url'));
-        const autoupdate = (rssUrl) => {
-          fetchData(rssUrl)
-            .then((data2) => {
-              data2.rssPosts.forEach((post) => {
-                if (!getPost(rssUrl, post.link)) {
-                  const feed = watchState.data.find((f) => f.url === rssUrl);
-                  if (feed) {
-                    feed.posts.push(post);
-                  }
-                }
-              });
-            });
-          setTimeout(() => autoupdate(url), 5000);
-        };
-        autoupdate(url);
       })
       .catch((error) => {
         renderResult(error);
@@ -104,6 +89,24 @@ const app = () => {
   };
 
   form.addEventListener('submit', onSubmit);
+
+  const autoupdate = () => {
+    Object.keys(state.feeds).forEach((feedUrl) => {
+      fetchData(feedUrl)
+        .then((data2) => {
+          data2.rssPosts.forEach((post) => {
+            if (!getPost(feedUrl, post.link)) {
+              const feed = watchState.data.find((f) => f.url === feedUrl);
+              if (feed) {
+                feed.posts.push(post);
+              }
+            }
+          });
+        });
+    });
+    setTimeout(autoupdate, 5000);
+  };
+  autoupdate();
 
   exampleModal.addEventListener('shown.bs.modal', (e) => {
     const target = e.relatedTarget;
