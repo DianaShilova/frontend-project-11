@@ -4,7 +4,6 @@ import i18next from 'i18next';
 import CustomError from './error';
 import parse from './rss';
 import renderResult, {
-  clearInput,
   createWatchState,
 } from './view';
 import getPost from './getPost';
@@ -20,6 +19,7 @@ const app = () => {
     posts: {},
     data: [],
     modal: {},
+    input: '',
   };
 
   const schema = yup.object().shape({
@@ -68,10 +68,14 @@ const app = () => {
         watchState.state = 'invalid';
         watchState.form.error = error;
       });
-    clearInput();
+    watchState.input = '';
   };
 
   form.addEventListener('submit', onSubmit);
+
+  input.addEventListener('change', (e) => {
+    watchState.input = e.target.value;
+  });
 
   const autoupdate = () => {
     Object.keys(state.feeds).forEach((feedUrl) => {

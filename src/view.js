@@ -116,7 +116,9 @@ export const handleShowModal = (target, post) => {
 
 export const createWatchState = (state) => {
   const watchState = onChange(state, (path) => {
-    if (path === 'form.error') {
+    if (path === 'input') {
+      rssInput.value = state.input;
+    } else if (path === 'form.error') {
       renderResult(watchState.form.error);
     } else if (path.startsWith('data')) {
       renderFeeds(watchState.data);
