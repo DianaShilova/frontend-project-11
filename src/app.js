@@ -1,15 +1,13 @@
-import onChange from 'on-change';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
 import CustomError from './error';
 import parse from './rss';
 import renderResult, {
-  renderFeeds,
-  renderPosts,
-  handleShowModal,
   clearInput,
+  createWatchState,
 } from './view';
+import getPost from './getPost';
 
 const exampleModal = document.querySelector('#modal');
 const form = document.querySelector('.rss-form');
@@ -21,20 +19,14 @@ const app = () => {
     feeds: {},
     posts: {},
     data: [],
-  };
-
-  const getPost = (feedUrl, postUrl) => {
-    const feed = state.data.find((f) => f.url === feedUrl);
-    if (feed) {
-      const post = feed.posts.find((p) => p.link === postUrl);
-      return post;
-    }
-    return undefined;
+    modal: {},
   };
 
   const schema = yup.object().shape({
     url: yup.string().url(i18next.t('error-url')).required(i18next.t('required')),
   });
+
+  const watchState = createWatchState(state);
 
   const fetchData = (url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
     .then((response) => response.data.contents)
@@ -45,15 +37,6 @@ const app = () => {
       }
       throw new Error(i18next.t('network-error'));
     });
-
-  const watchState = onChange(state, (path) => {
-    if (path === 'form.error') {
-      renderResult(watchState.form.error);
-    } else if (path.startsWith('data')) {
-      renderFeeds(watchState.data);
-      renderPosts(watchState.data);
-    }
-  });
 
   const onSubmit = (event) => {
     event.preventDefault();
@@ -95,7 +78,7 @@ const app = () => {
       fetchData(feedUrl)
         .then((data2) => {
           data2.rssPosts.forEach((post) => {
-            if (!getPost(feedUrl, post.link)) {
+            if (!getPost(state, feedUrl, post.link)) {
               const feed = watchState.data.find((f) => f.url === feedUrl);
               if (feed) {
                 feed.posts.push(post);
@@ -110,10 +93,11 @@ const app = () => {
 
   exampleModal.addEventListener('shown.bs.modal', (e) => {
     const target = e.relatedTarget;
-    const postUrl = target.getAttribute('data-post-url');
-    const feedUrl = target.getAttribute('data-feed-url');
-    const post = getPost(feedUrl, postUrl);
-    handleShowModal(e, post);
+    watchState.modal = {
+      postUrl: target.getAttribute('data-post-url'),
+      feedUrl: target.getAttribute('data-feed-url'),
+      target,
+    };
   });
 };
 

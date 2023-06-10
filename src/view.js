@@ -1,3 +1,6 @@
+import onChange from 'on-change';
+import getPost from './getPost';
+
 const rssInput = document.querySelector('.form-control');
 const validatorOutput = document.querySelector('.feedback');
 const rssFeedsElement = document.querySelector('.feeds');
@@ -96,8 +99,7 @@ export const renderPosts = (data) => {
   card.append(ul);
 };
 
-export const handleShowModal = (e, post) => {
-  const target = e.relatedTarget;
+export const handleShowModal = (target, post) => {
   post.read = true;
 
   const modalTitle = exampleModal.querySelector('.modal-title');
@@ -110,6 +112,21 @@ export const handleShowModal = (e, post) => {
   buttonPost.setAttribute('href', post.link);
   postTitle.classList.remove('fw-bold');
   postTitle.classList.add('fw-normal');
+};
+
+export const createWatchState = (state) => {
+  const watchState = onChange(state, (path) => {
+    if (path === 'form.error') {
+      renderResult(watchState.form.error);
+    } else if (path.startsWith('data')) {
+      renderFeeds(watchState.data);
+      renderPosts(watchState.data);
+    } else if (path === 'modal') {
+      const post = getPost(state, state.modal.feedUrl, state.modal.postUrl);
+      handleShowModal(state.modal.target, post);
+    }
+  });
+  return watchState;
 };
 
 export const clearInput = () => {
