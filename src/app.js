@@ -43,7 +43,7 @@ const app = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    const formData = new FormData(form);
+    const formData = new FormData(event.target);
     const url = formData.get('url');
     schema.validate({ url })
       .then(() => {
@@ -92,7 +92,7 @@ const app = () => {
             if (!getPost(state, feedUrl, post.link)) {
               const feed = watchState.data.find((f) => f.url === feedUrl);
               if (feed) {
-                feed.posts.push(post);
+                feed.posts.unshift(post);
               }
             }
           });
