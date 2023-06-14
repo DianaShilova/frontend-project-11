@@ -42,7 +42,8 @@ const app = () => {
 
   const onSubmit = (event) => {
     event.preventDefault();
-    const url = input.value;
+    const formData = new FormData(form);
+    const url = formData.get('url');
     schema.validate({ url })
       .then(() => {
         if (!watchState.feeds[url]) {
