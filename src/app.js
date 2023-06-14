@@ -14,12 +14,13 @@ const input = document.querySelector('#url-input');
 
 const app = () => {
   const state = {
-    state: 'init', // invalid, loading
+    state: 'init', // invalid, loading, success
     feeds: {},
     posts: {},
     data: [],
     modal: {},
     input: '',
+    error: null,
   };
 
   const schema = yup.object().shape({
@@ -48,7 +49,6 @@ const app = () => {
       .then(() => {
         if (!watchState.feeds[url]) {
           watchState.state = 'loading';
-          renderResult(null, i18next.t('loading-url'));
           return fetchData(getProxyUrl(url));
         }
         renderResult(new Error(i18next.t('already-exist')));
@@ -65,13 +65,12 @@ const app = () => {
           url,
           posts: data.rssPosts,
         });
-        renderResult(null, i18next.t('success-url'));
+        watchState.state = 'success';
         watchState.input = '';
       })
       .catch((error) => {
-        renderResult(error);
+        watchState.error = error;
         watchState.state = 'invalid';
-        watchState.form.error = error;
       })
       .finally(() => {
         watchState.state = 'init';
@@ -85,8 +84,9 @@ const app = () => {
   });
 
   const autoupdate = () => {
-    Object.keys(state.feeds).forEach((feedUrl) => {
-      fetchData(feedUrl)
+    const feeds = Object.keys(watchState.feeds);
+    feeds.forEach((feedUrl) => {
+      fetchData(getProxyUrl(feedUrl))
         .then((data2) => {
           data2.rssPosts.forEach((post) => {
             if (!getPost(state, feedUrl, post.link)) {
@@ -96,9 +96,12 @@ const app = () => {
               }
             }
           });
+          setTimeout(autoupdate, 5000);
         });
     });
-    setTimeout(autoupdate, 5000);
+    if (feeds.length === 0) {
+      setTimeout(autoupdate, 5000);
+    }
   };
   autoupdate();
 

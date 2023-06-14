@@ -1,4 +1,5 @@
 import onChange from 'on-change';
+import i18next from 'i18next';
 import getPost from './getPost';
 
 const rssInput = document.querySelector('.form-control');
@@ -132,10 +133,18 @@ export const createWatchState = (state) => {
         case 'loading':
           submitButton.disabled = true;
           rssInput.disabled = true;
+          renderResult(null, i18next.t('loading-url'));
           break;
-        default:
+        case 'invalid':
+          renderResult(state.error);
+          break;
+        case 'success':
+          renderResult(null, i18next.t('success-url'));
           submitButton.disabled = false;
           rssInput.disabled = false;
+          break;
+        default:
+          break;
       }
     }
   });
