@@ -14,7 +14,7 @@ const input = document.querySelector('#url-input');
 
 const app = () => {
   const state = {
-    state: 'init',
+    state: 'init', // invalid, loading
     feeds: {},
     posts: {},
     data: [],
@@ -28,14 +28,16 @@ const app = () => {
 
   const watchState = createWatchState(state);
 
-  const fetchData = (url) => axios.get(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`)
+  const getProxyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
+
+  const fetchData = (url) => axios.get(url)
     .then((response) => response.data.contents)
     .then((data) => parse(data))
     .catch((error) => {
       if (error instanceof CustomError) {
         throw error;
       }
-      throw new Error(i18next.t('network-error'));
+      throw new Error(`${i18next.t('network-error')}: ${error.message}`);
     });
 
   const onSubmit = (event) => {
@@ -44,8 +46,9 @@ const app = () => {
     schema.validate({ url })
       .then(() => {
         if (!watchState.feeds[url]) {
+          watchState.state = 'loading';
           renderResult(null, i18next.t('loading-url'));
-          return fetchData(url);
+          return fetchData(getProxyUrl(url));
         }
         renderResult(new Error(i18next.t('already-exist')));
         throw new Error(i18next.t('already-exist'));
@@ -62,13 +65,16 @@ const app = () => {
           posts: data.rssPosts,
         });
         renderResult(null, i18next.t('success-url'));
+        watchState.input = '';
       })
       .catch((error) => {
         renderResult(error);
         watchState.state = 'invalid';
         watchState.form.error = error;
+      })
+      .finally(() => {
+        watchState.state = 'init';
       });
-    watchState.input = '';
   };
 
   form.addEventListener('submit', onSubmit);

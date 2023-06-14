@@ -6,6 +6,7 @@ const validatorOutput = document.querySelector('.feedback');
 const rssFeedsElement = document.querySelector('.feeds');
 const rssPostsElement = document.querySelector('.posts');
 const exampleModal = document.querySelector('#modal');
+const submitButton = document.querySelector('.rss-form button[type=submit]');
 
 const renderResult = (error, message) => {
   const isError = !!error;
@@ -126,6 +127,16 @@ export const createWatchState = (state) => {
     } else if (path === 'modal') {
       const post = getPost(state, state.modal.feedUrl, state.modal.postUrl);
       handleShowModal(state.modal.target, post);
+    } else if (path === 'state') {
+      switch (state.state) {
+        case 'loading':
+          submitButton.disabled = true;
+          rssInput.disabled = true;
+          break;
+        default:
+          submitButton.disabled = false;
+          rssInput.disabled = false;
+      }
     }
   });
   return watchState;
