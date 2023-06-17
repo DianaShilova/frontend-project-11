@@ -20,7 +20,7 @@ const app = () => {
   };
 
   const schema = yup.object().shape({
-    url: yup.string().url(i18next.t('error-url')).required(i18next.t('required')),
+    url: yup.string().url(i18next.t('error-url')).required(),
   });
 
   const watchState = createWatchState(state);
@@ -28,8 +28,7 @@ const app = () => {
   const getProxyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
   const fetchData = (url) => axios.get(url)
-    .then((response) => response.data.contents)
-    .then((data) => parse(data))
+    .then((response) => parse(response.data.contents))
     .catch((error) => {
       if (error instanceof CustomError) {
         throw error;
