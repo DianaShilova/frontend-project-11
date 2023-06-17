@@ -19,7 +19,7 @@ const renderResult = (error, message) => {
   }
 };
 
-export const renderFeeds = (data) => {
+export const renderFeeds = (feedsData) => {
   const rssFeedsElement = document.querySelector('.feeds');
   rssFeedsElement.innerHTML = '';
   const h2 = document.createElement('h2');
@@ -33,17 +33,17 @@ export const renderFeeds = (data) => {
   card.append(cardBody);
   cardBody.append(h2);
 
-  Object.values(data).forEach((rssData) => {
+  feedsData.forEach((feedData) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'border-0', 'border-end-0');
     ul.append(li);
     const h3 = document.createElement('h3');
     h3.classList.add('h6', 'm-0');
-    h3.textContent = rssData.title;
+    h3.textContent = feedData.title;
 
     const p = document.createElement('p');
     p.classList.add('m-0', 'small', 'text-black-50');
-    p.textContent = rssData.description;
+    p.textContent = feedData.description;
 
     li.append(h3);
     li.append(p);
@@ -52,7 +52,7 @@ export const renderFeeds = (data) => {
   });
 };
 
-export const renderPosts = (data) => {
+export const renderPosts = (postsData) => {
   const rssPostsElement = document.querySelector('.posts');
   rssPostsElement.innerHTML = '';
   let i = 0;
@@ -67,32 +67,30 @@ export const renderPosts = (data) => {
   cardBody.classList.add('card-body');
   card.append(cardBody);
   cardBody.append(h2);
-  data.forEach((feed) => {
-    feed.posts.forEach((post) => {
-      i += 1;
-      const li = document.createElement('li');
-      li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
-      ul.append(li);
-      const a = document.createElement('a');
-      a.setAttribute('href', post.link);
-      a.textContent = post.title;
-      a.dataset.id = i;
-      if (post.read !== true) {
-        a.classList.add('fw-bold');
-      }
-      const button = document.createElement('button');
-      button.setAttribute('type', 'button');
-      button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-      button.textContent = 'Просмотр';
-      button.dataset.id = i;
-      button.dataset.bsToggle = 'modal';
-      button.dataset.bsTarget = '#modal';
-      button.dataset.feedUrl = feed.url;
-      button.dataset.postUrl = post.link;
+  postsData.forEach((post) => {
+    i += 1;
+    const li = document.createElement('li');
+    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    ul.append(li);
+    const a = document.createElement('a');
+    a.setAttribute('href', post.link);
+    a.textContent = post.title;
+    a.dataset.id = i;
+    if (post.read !== true) {
+      a.classList.add('fw-bold');
+    }
+    const button = document.createElement('button');
+    button.setAttribute('type', 'button');
+    button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    button.textContent = 'Просмотр';
+    button.dataset.id = i;
+    button.dataset.bsToggle = 'modal';
+    button.dataset.bsTarget = '#modal';
+    // button.dataset.feedUrl = feed.url;
+    button.dataset.postUrl = post.link;
 
-      li.append(a);
-      li.append(button);
-    });
+    li.append(a);
+    li.append(button);
   });
 
   rssPostsElement.append(card);
@@ -123,11 +121,12 @@ export const createWatchState = (state) => {
       rssInput.value = state.input;
     } else if (path === 'form.error') {
       renderResult(watchState.form.error);
-    } else if (path.startsWith('data')) {
-      renderFeeds(watchState.data);
-      renderPosts(watchState.data);
+    } else if (path === 'feedsData') {
+      renderFeeds(watchState.feedsData);
+    } else if (path === 'postsData') {
+      renderPosts(watchState.postsData);
     } else if (path === 'modal') {
-      const post = getPost(state, state.modal.feedUrl, state.modal.postUrl);
+      const post = getPost(state, state.modal.postUrl);
       handleShowModal(state.modal.target, post);
     } else if (path === 'addingFeddProcess') {
       switch (state.addingFeddProcess) {

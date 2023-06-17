@@ -1,10 +1,3 @@
-const getPost = (state, feedUrl, postUrl) => {
-  const feed = state.data.find((f) => f.url === feedUrl);
-  if (feed) {
-    const post = feed.posts.find((p) => p.link === postUrl);
-    return post;
-  }
-  return undefined;
-};
+const getPost = (state, postUrl) => state.postsData.find((p) => p.link === postUrl);
 
 export default getPost;

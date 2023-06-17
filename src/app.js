@@ -12,7 +12,8 @@ const app = () => {
   const state = {
     addingFeddProcess: 'init', // invalid, loading, success
     feeds: {},
-    data: [],
+    feedsData: [],
+    postsData: [],
     modal: {},
     input: '',
     error: null,
@@ -51,12 +52,12 @@ const app = () => {
       })
       .then((data) => {
         watchState.feeds[url] = true;
-        watchState.data.push({
+        watchState.feedsData.push({
           title: data.rssFeeds.title,
           description: data.rssFeeds.description,
           url,
-          posts: data.rssPosts,
         });
+        watchState.postsData.concat([data.rssPosts]);
         watchState.addingFeddProcess = 'success';
         watchState.input = '';
       })
@@ -82,14 +83,13 @@ const app = () => {
     feeds.forEach((feedUrl) => {
       fetchData(getProxyUrl(feedUrl))
         .then((data2) => {
+          const newPosts = [];
           data2.rssPosts.forEach((post) => {
-            if (!getPost(state, feedUrl, post.link)) {
-              const feed = watchState.data.find((f) => f.url === feedUrl);
-              if (feed) {
-                feed.posts.unshift(post);
-              }
+            if (!getPost(state, post.link)) {
+              newPosts.unshift(post);
             }
           });
+          watchState.postsData = [...watchState.postsData, ...newPosts];
           setTimeout(autoupdate, 5000);
         });
     });
