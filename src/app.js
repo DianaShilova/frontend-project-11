@@ -12,7 +12,6 @@ const app = () => {
   const state = {
     addingFeddProcess: 'init', // invalid, loading, success
     feeds: {},
-    posts: {},
     data: [],
     modal: {},
     input: '',
@@ -52,9 +51,6 @@ const app = () => {
       })
       .then((data) => {
         watchState.feeds[url] = true;
-        data.rssPosts.forEach((post) => {
-          watchState.posts[post.link] = post;
-        });
         watchState.data.push({
           title: data.rssFeeds.title,
           description: data.rssFeeds.description,
