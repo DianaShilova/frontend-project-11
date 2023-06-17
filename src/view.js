@@ -2,14 +2,10 @@ import onChange from 'on-change';
 import i18next from 'i18next';
 import getPost from './getPost';
 
-const rssInput = document.querySelector('.form-control');
-const validatorOutput = document.querySelector('.feedback');
-const rssFeedsElement = document.querySelector('.feeds');
-const rssPostsElement = document.querySelector('.posts');
-const exampleModal = document.querySelector('#modal');
-const submitButton = document.querySelector('.rss-form button[type=submit]');
-
 const renderResult = (error, message) => {
+  const rssInput = document.querySelector('.form-control');
+  const validatorOutput = document.querySelector('.feedback');
+
   const isError = !!error;
   rssInput.classList.toggle('is-invalid', isError);
   rssInput.classList.toggle('is-valid', !isError);
@@ -24,6 +20,7 @@ const renderResult = (error, message) => {
 };
 
 export const renderFeeds = (data) => {
+  const rssFeedsElement = document.querySelector('.feeds');
   rssFeedsElement.innerHTML = '';
   const h2 = document.createElement('h2');
   h2.textContent = 'Фиды';
@@ -56,6 +53,7 @@ export const renderFeeds = (data) => {
 };
 
 export const renderPosts = (data) => {
+  const rssPostsElement = document.querySelector('.posts');
   rssPostsElement.innerHTML = '';
   let i = 0;
   const h2 = document.createElement('h2');
@@ -104,6 +102,7 @@ export const renderPosts = (data) => {
 export const handleShowModal = (target, post) => {
   post.read = true;
 
+  const exampleModal = document.querySelector('#modal');
   const modalTitle = exampleModal.querySelector('.modal-title');
   const modalBody = exampleModal.querySelector('.modal-body');
   const buttonPost = exampleModal.querySelector('.full-article');
@@ -117,6 +116,8 @@ export const handleShowModal = (target, post) => {
 };
 
 export const createWatchState = (state) => {
+  const rssInput = document.querySelector('.form-control');
+  const submitButton = document.querySelector('.rss-form button[type=submit]');
   const watchState = onChange(state, (path) => {
     if (path === 'input') {
       rssInput.value = state.input;
@@ -128,8 +129,8 @@ export const createWatchState = (state) => {
     } else if (path === 'modal') {
       const post = getPost(state, state.modal.feedUrl, state.modal.postUrl);
       handleShowModal(state.modal.target, post);
-    } else if (path === 'state') {
-      switch (state.state) {
+    } else if (path === 'addingFeddProcess') {
+      switch (state.addingFeddProcess) {
         case 'loading':
           submitButton.disabled = true;
           rssInput.disabled = true;
@@ -152,6 +153,7 @@ export const createWatchState = (state) => {
 };
 
 export const clearInput = () => {
+  const rssInput = document.querySelector('.form-control');
   rssInput.value = '';
 };
 

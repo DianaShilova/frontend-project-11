@@ -8,13 +8,9 @@ import renderResult, {
 } from './view';
 import getPost from './getPost';
 
-const exampleModal = document.querySelector('#modal');
-const form = document.querySelector('.rss-form');
-const input = document.querySelector('#url-input');
-
 const app = () => {
   const state = {
-    state: 'init', // invalid, loading, success
+    addingFeddProcess: 'init', // invalid, loading, success
     feeds: {},
     posts: {},
     data: [],
@@ -48,7 +44,7 @@ const app = () => {
     schema.validate({ url })
       .then(() => {
         if (!watchState.feeds[url]) {
-          watchState.state = 'loading';
+          watchState.addingFeddProcess = 'loading';
           return fetchData(getProxyUrl(url));
         }
         renderResult(new Error(i18next.t('already-exist')));
@@ -65,20 +61,22 @@ const app = () => {
           url,
           posts: data.rssPosts,
         });
-        watchState.state = 'success';
+        watchState.addingFeddProcess = 'success';
         watchState.input = '';
       })
       .catch((error) => {
         watchState.error = error;
-        watchState.state = 'invalid';
+        watchState.addingFeddProcess = 'invalid';
       })
       .finally(() => {
-        watchState.state = 'init';
+        watchState.addingFeddProcess = 'init';
       });
   };
 
+  const form = document.querySelector('.rss-form');
   form.addEventListener('submit', onSubmit);
 
+  const input = document.querySelector('#url-input');
   input.addEventListener('change', (e) => {
     watchState.input = e.target.value;
   });
@@ -105,6 +103,7 @@ const app = () => {
   };
   autoupdate();
 
+  const exampleModal = document.querySelector('#modal');
   exampleModal.addEventListener('shown.bs.modal', (e) => {
     const target = e.relatedTarget;
     watchState.modal = {
