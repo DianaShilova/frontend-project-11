@@ -7,6 +7,25 @@ import { createWatchState } from './view';
 import getPost from './getPost';
 
 const app = () => {
+  i18next.init({
+    lng: 'ru',
+    debug: true,
+    resources: {
+      ru: {
+        translation: {
+          'error-url': 'Ссылка должна быть валидным URL',
+          'success-url': 'RSS успешно загружен',
+          // 'required': 'Ссылка не должна быть пустой',
+          'already-exist': 'RSS уже существует',
+          'not-rss': 'Ресурс не содержит валидный RSS',
+          'loading-url': 'RSS загружается',
+          'parsing-error': 'Ресурс не содержит валидный RSS',
+          'network-error': 'Ошибка сети',
+        },
+      },
+    },
+  });
+
   const state = {
     addingFeddProcess: 'init', // invalid, loading, success
     feeds: {},
