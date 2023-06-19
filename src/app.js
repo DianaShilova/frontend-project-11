@@ -25,7 +25,12 @@ const app = () => {
 
   const watchState = createWatchState(state);
 
-  const getProxyUrl = (url) => `https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(url)}`;
+  const getProxyUrl = (url) => {
+    const proxyUrl = new URL('/get', 'https://allorigins.hexlet.app');
+    proxyUrl.searchParams.set('disableCache', 'true');
+    proxyUrl.searchParams.set('url', url);
+    return proxyUrl.toString();
+  };
 
   const fetchData = (url) => axios.get(url)
     .then((response) => parse(response.data.contents))
@@ -40,10 +45,10 @@ const app = () => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const url = formData.get('url');
+    watchState.addingFeddProcess = 'loading';
     schema.validate({ url })
       .then(() => {
         if (!watchState.feeds[url]) {
-          watchState.addingFeddProcess = 'loading';
           return fetchData(getProxyUrl(url));
         }
         renderResult(new Error(i18next.t('already-exist')));
