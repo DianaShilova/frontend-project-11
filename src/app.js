@@ -36,7 +36,7 @@ const app = () => {
       if (error instanceof CustomError) {
         throw error;
       }
-      throw new Error(`${i18next.t('network-error')}: ${error.message}`);
+      throw new Error('network-error');
     });
 
   const validateUrl = (url) => schema.validate({ url })
@@ -44,7 +44,7 @@ const app = () => {
       if (!watchState.feeds[url]) {
         return fetchData(getProxyUrl(url));
       }
-      throw new Error(i18next.t('already-exist'));
+      throw new Error('already-exist');
     });
 
   const addFeed = (url) => {

@@ -1,4 +1,3 @@
-import i18next from 'i18next';
 import { XMLParser } from 'fast-xml-parser';
 import CustomError from './error';
 
@@ -12,7 +11,7 @@ const parse = (data) => {
     const rssPosts = xml.rss.channel.item;
     return { rssFeeds, rssPosts };
   } catch (error) {
-    throw new CustomError(`${i18next.t('parsing-error')}: ${error.message}`);
+    throw new CustomError('parsing-error');
   }
 };
 

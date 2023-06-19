@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import i18next, { init } from 'i18next';
+import i18next from 'i18next';
 import getPost from './getPost';
 
 const renderResult = (error, message) => {
@@ -13,7 +13,7 @@ const renderResult = (error, message) => {
   validatorOutput.classList.toggle('text-danger', isError);
   validatorOutput.classList.toggle('text-success', !isError);
   if (isError) {
-    validatorOutput.textContent = error.message;
+    validatorOutput.textContent = i18next.t(error.message);
   } else {
     validatorOutput.textContent = message;
   }
