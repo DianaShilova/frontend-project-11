@@ -13,6 +13,9 @@ const app = () => {
     resources: {
       ru: {
         translation: {
+          'feeds-label': 'Фиды',
+          'posts-label': 'Посты',
+          'preview-label': 'Просмотр',
           'error-url': 'Ссылка должна быть валидным URL',
           'success-url': 'RSS успешно загружен',
           // 'required': 'Ссылка не должна быть пустой',
@@ -34,6 +37,9 @@ const app = () => {
     modal: {},
     input: '',
     error: null,
+    ui: {
+      readPosts: {},
+    },
   };
 
   const schema = yup.object().shape({
@@ -130,6 +136,7 @@ const app = () => {
       feedUrl: target.getAttribute('data-feed-url'),
       target,
     };
+    watchState.ui.readPosts[target.getAttribute('data-post-url')] = true;
   });
 };
 

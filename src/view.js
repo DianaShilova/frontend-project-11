@@ -23,7 +23,7 @@ export const renderFeeds = (feedsData) => {
   const rssFeedsElement = document.querySelector('.feeds');
   rssFeedsElement.innerHTML = '';
   const h2 = document.createElement('h2');
-  h2.textContent = 'Фиды';
+  h2.textContent = i18next.t('feeds-label');
   const ul = document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
   const cardBody = document.createElement('div');
@@ -52,12 +52,12 @@ export const renderFeeds = (feedsData) => {
   });
 };
 
-export const renderPosts = (postsData) => {
+export const renderPosts = (postsData, readPosts) => {
   const rssPostsElement = document.querySelector('.posts');
   rssPostsElement.innerHTML = '';
   let i = 0;
   const h2 = document.createElement('h2');
-  h2.textContent = 'Посты';
+  h2.textContent = i18next.t('posts-label');
   h2.classList.add('card-title', 'h4');
   const ul = document.createElement('ul');
   ul.classList.add('list-group', 'border-0', 'rounded-0');
@@ -76,13 +76,13 @@ export const renderPosts = (postsData) => {
     a.setAttribute('href', post.link);
     a.textContent = post.title;
     a.dataset.id = i;
-    if (post.read !== true) {
+    if (readPosts[post.link] !== true) {
       a.classList.add('fw-bold');
     }
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
     button.classList.add('btn', 'btn-outline-primary', 'btn-sm');
-    button.textContent = 'Просмотр';
+    button.textContent = i18next.t('preview-label');
     button.dataset.id = i;
     button.dataset.bsToggle = 'modal';
     button.dataset.bsTarget = '#modal';
@@ -98,8 +98,6 @@ export const renderPosts = (postsData) => {
 };
 
 export const handleShowModal = (target, post) => {
-  post.read = true;
-
   const exampleModal = document.querySelector('#modal');
   const modalTitle = exampleModal.querySelector('.modal-title');
   const modalBody = exampleModal.querySelector('.modal-body');
@@ -124,7 +122,7 @@ export const createWatchState = (state) => {
     } else if (path === 'feedsData') {
       renderFeeds(watchState.feedsData);
     } else if (path === 'postsData') {
-      renderPosts(watchState.postsData);
+      renderPosts(watchState.postsData, watchState.ui.readPosts);
     } else if (path === 'modal') {
       const post = getPost(state, state.modal.postUrl);
       handleShowModal(state.modal.target, post);
