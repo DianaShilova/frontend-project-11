@@ -41,15 +41,17 @@ const app = () => {
       throw new Error(`${i18next.t('network-error')}: ${error.message}`);
     });
 
+  const validateUrl = (url) => schema.validate({ url })
+    .then(() => {
+      if (!watchState.feeds[url]) {
+        return fetchData(getProxyUrl(url));
+      }
+      renderResult(new Error(i18next.t('already-exist')));
+      throw new Error(i18next.t('already-exist'));
+    });
+
   const addFeed = (url) => {
-    schema.validate({ url })
-      .then(() => {
-        if (!watchState.feeds[url]) {
-          return fetchData(getProxyUrl(url));
-        }
-        renderResult(new Error(i18next.t('already-exist')));
-        throw new Error(i18next.t('already-exist'));
-      })
+    validateUrl(url)
       .then((data) => {
         watchState.feeds[url] = true;
         watchState.feedsData.push({
