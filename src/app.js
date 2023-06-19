@@ -41,11 +41,7 @@ const app = () => {
       throw new Error(`${i18next.t('network-error')}: ${error.message}`);
     });
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const url = formData.get('url');
-    watchState.addingFeddProcess = 'loading';
+  const addFeed = (url) => {
     schema.validate({ url })
       .then(() => {
         if (!watchState.feeds[url]) {
@@ -72,6 +68,14 @@ const app = () => {
       .finally(() => {
         watchState.addingFeddProcess = 'init';
       });
+  };
+
+  const onSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const url = formData.get('url');
+    watchState.addingFeddProcess = 'loading';
+    addFeed(url);
   };
 
   const form = document.querySelector('.rss-form');
