@@ -1,5 +1,5 @@
 import onChange from 'on-change';
-import i18next from 'i18next';
+import i18next, { init } from 'i18next';
 import getPost from './getPost';
 
 const renderResult = (error, message) => {
@@ -119,8 +119,8 @@ export const createWatchState = (state) => {
   const watchState = onChange(state, (path) => {
     if (path === 'input') {
       rssInput.value = state.input;
-    } else if (path === 'form.error') {
-      renderResult(watchState.form.error);
+    } else if (path === 'error') {
+      renderResult(watchState.error);
     } else if (path === 'feedsData') {
       renderFeeds(watchState.feedsData);
     } else if (path === 'postsData') {
@@ -140,6 +140,10 @@ export const createWatchState = (state) => {
           break;
         case 'success':
           renderResult(null, i18next.t('success-url'));
+          submitButton.disabled = false;
+          rssInput.disabled = false;
+          break;
+        case 'init':
           submitButton.disabled = false;
           rssInput.disabled = false;
           break;

@@ -3,9 +3,7 @@ import axios from 'axios';
 import i18next from 'i18next';
 import CustomError from './error';
 import parse from './rss';
-import renderResult, {
-  createWatchState,
-} from './view';
+import { createWatchState } from './view';
 import getPost from './getPost';
 
 const app = () => {
@@ -46,7 +44,6 @@ const app = () => {
       if (!watchState.feeds[url]) {
         return fetchData(getProxyUrl(url));
       }
-      renderResult(new Error(i18next.t('already-exist')));
       throw new Error(i18next.t('already-exist'));
     });
 
