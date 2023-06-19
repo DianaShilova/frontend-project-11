@@ -97,12 +97,9 @@ const app = () => {
             }
           });
           watchState.postsData = [...watchState.postsData, ...newPosts];
-          setTimeout(autoupdate, 5000);
         });
     });
-    if (feeds.length === 0) {
-      setTimeout(autoupdate, 5000);
-    }
+    setTimeout(autoupdate, 5000);
   };
   autoupdate();
 
