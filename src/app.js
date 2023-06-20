@@ -56,13 +56,7 @@ const app = () => {
   };
 
   const fetchData = (url) => axios.get(url)
-    .then((response) => parse(response.data.contents))
-    .catch((error) => {
-      if (error instanceof CustomError) {
-        throw error;
-      }
-      throw new Error('network-error');
-    });
+    .then((response) => parse(response.data.contents));
 
   const validateUrl = (url) => schema.validate({ url })
     .then(() => {
