@@ -22,7 +22,7 @@ const app = () => {
           'not-rss': 'Ресурс не содержит валидный RSS',
           'loading-url': 'RSS загружается',
           'parsing-error': 'Ресурс не содержит валидный RSS',
-          'network-error': 'Ошибка сети',
+          'Network Error': 'Ошибка сети',
         },
       },
     },
