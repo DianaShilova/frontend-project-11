@@ -1,7 +1,6 @@
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
-import CustomError from './error';
 import parse from './rss';
 import { createWatchState } from './view';
 import getPost from './getPost';
@@ -105,20 +104,17 @@ const app = () => {
   });
 
   const autoupdate = () => {
-    const feeds = Object.keys(watchState.feeds);
-    feeds.forEach((feedUrl) => {
-      fetchData(getProxyUrl(feedUrl))
-        .then((data2) => {
-          const newPosts = [];
-          data2.rssPosts.forEach((post) => {
-            if (!getPost(state, post.link)) {
-              newPosts.unshift(post);
-            }
-          });
-          watchState.postsData = [...watchState.postsData, ...newPosts];
+    const promises = watchState.feedsData.map(({ url }) => fetchData(getProxyUrl(url))
+      .then((data2) => {
+        const newPosts = [];
+        data2.rssPosts.forEach((post) => {
+          if (!getPost(state, post.link)) {
+            newPosts.unshift(post);
+          }
         });
-    });
-    setTimeout(autoupdate, 5000);
+        watchState.postsData = [...watchState.postsData, ...newPosts];
+      }));
+    Promise.all(promises).finally(() => setTimeout(autoupdate, 5000));
   };
   autoupdate();
 
